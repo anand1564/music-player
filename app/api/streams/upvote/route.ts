@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import {z} from "zod";
 
-const DownvoteSchema = z.object({
+const UpvoteSchema = z.object({
     streamId: z.string(),
 })
 
@@ -21,7 +21,7 @@ export async function POST(req:NextRequest) {
         return NextResponse.json({error: "User not found"}, {status: 404});
     }
     try{
-        const data = DownvoteSchema.parse(await req.json());
+        const data = UpvoteSchema.parse(await req.json());
         await prismaClient.upvote.create({
             data:{
                 userId: user.id,
@@ -29,7 +29,7 @@ export async function POST(req:NextRequest) {
             }
         })
     }catch(e){
-        return NextResponse.json({message: "Can't downvote!"}, {status: 400});
+        return NextResponse.json({message: "Can't Upvote!"}, {status: 400});
     }
     
 }

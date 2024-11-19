@@ -4,6 +4,8 @@ import { error } from "console";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import {z} from "zod";
+//@ts-ignore
+import youtubesearchapi from "youtube-search-api";
 
 const DownvoteSchema = z.object({
     streamId: z.string(),

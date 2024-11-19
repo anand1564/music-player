@@ -19,6 +19,7 @@ model User {
   provider provider
   streams  Stream[]
   upvotes  Upvote[]
+  downvotes Downvote[]
 }
 
 enum provider {
@@ -32,9 +33,13 @@ model Stream {
   id          String     @id @default(uuid())
   url         String
   extractedId String
+  title       String
+  smallImg    String
+  largeImg    String
   type        StreamType
   active      Boolean    @default(true)
   upvotes     Upvote[]
+  downvotes   Downvote[]
   userId      String
   user        User       @relation(fields: [userId], references: [id])
 }
@@ -53,3 +58,13 @@ model Upvote {
 
   @@unique([userId, streamId])
 }
+model Downvote{
+  id       String @id @default(uuid())
+  userId   String
+  streamId String
+  user     User   @relation(fields: [userId], references: [id])
+  stream   Stream @relation(fields: [streamId], references: [id])
+
+  @@unique([userId, streamId])
+}
+
