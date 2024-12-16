@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,18 +9,31 @@ datasource db {
 
 model User {
   id       String   @id @default(uuid())
-  email    String
-  provider provider
+  email    String   @unique
+  provider Provider
+  sessions Session[]
   streams  Stream[]
-  upvotes  Upvote[]
-  downvotes Downvote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-enum provider {
+enum Provider {
   GOOGLE
   FACEBOOK
   TWITTER
   GITHUB
+}
+
+model Session {
+  id          String   @id @default(uuid())
+  name        String
+  description String?  // Optional field
+  creatorId   String
+  creator     User     @relation(fields: [creatorId], references: [id])
+  streams     Stream[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Stream {
@@ -38,33 +45,17 @@ model Stream {
   largeImg    String
   type        StreamType
   active      Boolean    @default(true)
-  upvotes     Upvote[]
-  downvotes   Downvote[]
+  sessionId   String
+  session     Session    @relation(fields: [sessionId], references: [id])
   userId      String
   user        User       @relation(fields: [userId], references: [id])
+
+  upvotes     Int        @default(0)
+  downvotes   Int        @default(0)
+  createdAt   DateTime   @default(now())
 }
 
 enum StreamType {
   Spotify
   Youtube
 }
-
-model Upvote {
-  id       String @id @default(uuid())
-  userId   String
-  streamId String
-  user     User   @relation(fields: [userId], references: [id])
-  stream   Stream @relation(fields: [streamId], references: [id])
-
-  @@unique([userId, streamId])
-}
-model Downvote{
-  id       String @id @default(uuid())
-  userId   String
-  streamId String
-  user     User   @relation(fields: [userId], references: [id])
-  stream   Stream @relation(fields: [streamId], references: [id])
-
-  @@unique([userId, streamId])
-}
-
