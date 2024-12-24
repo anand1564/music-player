@@ -1,5 +1,5 @@
 
-import { prismaClient } from "@/app/lib/db";
+import { prismaClient } from "@/app/libs/db";
 import { error } from "console";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
